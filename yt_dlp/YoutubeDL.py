@@ -1786,6 +1786,10 @@ class YoutubeDL:
         self.to_screen(f'[wait] Waiting for {format_dur(diff)} - Press Ctrl+C to try now')
 
         wait_till = time.time() + diff
+
+        if "offset" in self.params:
+            wait_till = wait_till - self.params["offset"]
+
         try:
             while True:
                 diff = wait_till - time.time()

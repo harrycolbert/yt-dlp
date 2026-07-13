@@ -523,6 +523,11 @@ def create_parser():
             'Wait for scheduled streams to become available. '
             'Pass the minimum number of seconds (or range) to wait between retries'))
     general.add_option(
+        '--offset',
+        dest='wait_for_video', metavar='AMOUNT', default=None,
+        help={
+            'A buffer of time before the scheduled livestream start to begin recording.'})
+    general.add_option(
         '--no-wait-for-video',
         dest='wait_for_video', action='store_const', const=None,
         help='Do not wait for scheduled streams (default)')
