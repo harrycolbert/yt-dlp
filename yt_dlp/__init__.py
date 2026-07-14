@@ -243,6 +243,9 @@ def validate_options(opts):
         validate_minmax(min_wait, max_wait, 'time range to wait for video')
         opts.wait_for_video = (min_wait, max_wait)
 
+    if opts.offset is not None:
+        opts.offset = int(opts.offset)
+
     # Format sort
     for f in opts.format_sort:
         validate_regex('format sorting', f, FormatSorter.regex)
@@ -923,6 +926,7 @@ def parse_options(argv=None):
         'extract_flat': opts.extract_flat,
         'live_from_start': opts.live_from_start,
         'wait_for_video': opts.wait_for_video,
+        'offset': opts.offset,
         'mark_watched': opts.mark_watched,
         'merge_output_format': opts.merge_output_format,
         'final_ext': final_ext,
