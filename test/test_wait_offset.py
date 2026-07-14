@@ -42,14 +42,14 @@ class YoutubeDL(yt_dlp.YoutubeDL,unittest.TestCase):
         except ReExtractInfo:
             end_time = time.time()
             elapsed = end_time - start_time
-            
+
             assert round(elapsed) == 5
             return
 
         assert False
 
 def _make_result():
-    res = {
+    return {
         'id': 'testid',
         '_type': 'video',
         'live_status': 'is_upcoming',
@@ -58,7 +58,6 @@ def _make_result():
         'extractor_key': 'TestEx',
         'release_timestamp': time.time() + 10,
     }
-    return res
 
 if __name__ == '__main__':
     unittest.main()

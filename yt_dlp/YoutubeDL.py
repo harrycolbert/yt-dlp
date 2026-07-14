@@ -1787,8 +1787,8 @@ class YoutubeDL:
 
         wait_till = time.time() + diff
 
-        if "offset" in self.params:
-            wait_till = wait_till - self.params["offset"]
+        if 'offset' in self.params:
+            wait_till = wait_till - self.params['offset']
 
         try:
             while True:
