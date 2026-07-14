@@ -14,28 +14,32 @@ from test.helper import (
     is_download_test,
 )
 
+
 @is_download_test
-class YoutubeDL(yt_dlp.YoutubeDL,unittest.TestCase):
+class YoutubeDL(yt_dlp.YoutubeDL, unittest.TestCase):
     def __init__(self, *args, **kwargs):
         self.to_stderr = self.to_screen
         self.processed_info_dicts = []
+        # Note: since this is 5 seconds before the timestamp, which we've set to 10 seconds,
+        # it should throw the ReExtractInfo exception 5 seconds after the test starts
         self.params = {
-            'offset': 5, #since this is 5 seconds before the timestamp, which we've set to 10 seconds, it should throw the ReExtractInfo exception 5 seconds after the test starts
-            'wait_for_video': (1,100),
-            'logtostderror': False,
+            "offset": 5,  # See note above
+            "wait_for_video": (1, 100),
+            "logtostderror": False,
         }
 
         super().__init__(self.params)
-        self._testMethodName = 'test_wait_offset'
+        self._testMethodName = "test_wait_offset"
         self.test_wait_offset = self.test_1
         self._cleanups = []
-        self._testMethodDoc = 'A test of the offset feature with the --wait-for-video option'
+        self._testMethodDoc = (
+            "A test of the offset feature with the --wait-for-video option"
+        )
 
     def test_1(self):
         ie_result = _make_result()
 
         start_time = time.time()
-
 
         try:
             self._wait_for_video(ie_result)
@@ -48,16 +52,18 @@ class YoutubeDL(yt_dlp.YoutubeDL,unittest.TestCase):
 
         assert False
 
+
 def _make_result():
     return {
-        'id': 'testid',
-        '_type': 'video',
-        'live_status': 'is_upcoming',
-        'title': 'testttitle',
-        'extractor': 'testex',
-        'extractor_key': 'TestEx',
-        'release_timestamp': time.time() + 10,
+        "id": "testid",
+        "_type": "video",
+        "live_status": "is_upcoming",
+        "title": "testttitle",
+        "extractor": "testex",
+        "extractor_key": "TestEx",
+        "release_timestamp": time.time() + 10,
     }
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
