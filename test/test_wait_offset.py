@@ -17,7 +17,7 @@ from test.helper import (
 
 @is_download_test
 class YoutubeDL(yt_dlp.YoutubeDL, unittest.TestCase):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.to_stderr = self.to_screen
         self.processed_info_dicts = []
         # Note: since this is 5 seconds before the timestamp, which we've set to 10 seconds,
@@ -55,15 +55,15 @@ class YoutubeDL(yt_dlp.YoutubeDL, unittest.TestCase):
 
 def _make_result():
     return {
-        "id": "testid",
-        "_type": "video",
-        "live_status": "is_upcoming",
-        "title": "testttitle",
-        "extractor": "testex",
-        "extractor_key": "TestEx",
-        "release_timestamp": time.time() + 10,
+        'id': 'testid',
+        '_type': 'video',
+        'live_status': 'is_upcoming',
+        'title': 'testttitle',
+        'extractor': 'testex',
+        'extractor_key': 'TestEx',
+        'release_timestamp': time.time() + 10,
     }
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
