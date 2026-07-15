@@ -17,7 +17,9 @@ from test.helper import (
 
 @is_download_test
 class YoutubeDL(yt_dlp.YoutubeDL, unittest.TestCase):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        _ = args # Args must exist for reasons outside of this test,
+        _ = kwargs # But PEP8 requires args exist.
         self.to_stderr = self.to_screen
         self.processed_info_dicts = []
         # Note: since this is 5 seconds before the timestamp, which we've set to 10 seconds,
