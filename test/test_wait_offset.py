@@ -23,17 +23,17 @@ class YoutubeDL(yt_dlp.YoutubeDL, unittest.TestCase):
         # Note: since this is 5 seconds before the timestamp, which we've set to 10 seconds,
         # it should throw the ReExtractInfo exception 5 seconds after the test starts
         self.params = {
-            "offset": 5,  # See note above
-            "wait_for_video": (1, 100),
-            "logtostderror": False,
+            'offset': 5,  # See note above
+            'wait_for_video': (1, 100),
+            'logtostderror': False,
         }
 
         super().__init__(self.params)
-        self._testMethodName = "test_wait_offset"
+        self._testMethodName = 'test_wait_offset'
         self.test_wait_offset = self.test_1
         self._cleanups = []
         self._testMethodDoc = (
-            "A test of the offset feature with the --wait-for-video option"
+            'A test of the offset feature with the --wait-for-video option'
         )
 
     def test_1(self):
