@@ -524,7 +524,7 @@ def create_parser():
             'Pass the minimum number of seconds (or range) to wait between retries'))
     general.add_option(
         '--offset',
-        dest='wait_for_video', metavar='AMOUNT', default=None,
+        dest='offset', metavar='AMOUNT', default=None,
         help={
             'A buffer of time before the scheduled livestream start to begin recording.'})
     general.add_option(
