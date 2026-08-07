@@ -951,12 +951,11 @@ def create_parser():
         help='List available formats of each video. Simulate unless --no-simulate is used')
     video_format.add_option(
         '--list-formats-short',
-        action='store',
-        dest='listformats_short',
+        action='store', dest='listformats_short',
         type='string',
         default=None,
         metavar='LANG',
-        help='Display filtered list of available formats (matching language code eg. en-US) for each video. ')
+        help='Displays filtered list of available formats (matching language code eg. en-US and excluding unavailable file sizes) for each video. ')
     video_format.add_option(
         '--list-formats-as-table',
         action='store_true', dest='listformats_table', default=True,
