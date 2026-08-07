@@ -950,6 +950,10 @@ def create_parser():
         action='store_true', dest='listformats',
         help='List available formats of each video. Simulate unless --no-simulate is used')
     video_format.add_option(
+        '--list-formats-short',
+        action='store_true', dest='listformats_short',
+        help='Filtered list of available formats of each video. Simulate unless --no-simulate is used')
+    video_format.add_option(
         '--list-formats-as-table',
         action='store_true', dest='listformats_table', default=True,
         help=optparse.SUPPRESS_HELP)
