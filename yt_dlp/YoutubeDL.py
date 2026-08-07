@@ -4103,8 +4103,8 @@ class YoutubeDL:
                 # Exclude formats that don't match selected language
                 fmt_lang = f.get('language')
                 if fmt_lang and fmt_lang != 'NA':
-                    fmt_lang_lower = fmt_lang.lower()
-                    if not any(fmt_lang_lower.startswith(target) for target in target_langs):
+                    fmt_lang_lower = fmt_lang.lower()   # Language matching not case-sensitive (en_US == en_us)
+                    if not any(fmt_lang_lower.startswith(target) for target in target_langs):   # Includes all dialects of selected language
                         continue
 
                 filtered_formats.append(f)
