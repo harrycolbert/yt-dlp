@@ -4084,7 +4084,32 @@ class YoutubeDL:
         self.to_stdout(table)
 
     def list_formats(self, info_dict):
-        self.__list_table(info_dict['id'], 'formats', self.render_formats_table, info_dict)
+        info_dict_copy = info_dict.copy()
+        selected_lang = self.params.get('list_formats_short')
+
+        if selected_lang is not None:
+            filtered_formats = []
+
+            for f in info_dict.get('formats', []):
+                if f.get('vcodec') == 'none' and f.get('acodec') != 'none':     # Preserve absolute essential standalone audio streams
+                    filtered_formats.append(f)
+                    continue
+
+                # Exclude formats with missing/unavailable file sizes
+                if not f.get('filesize') and not f.get('filesize_approx'):
+                    continue
+
+                # Exclude formats that don't match selected language
+                fmt_lang = f.get('language')
+                if fmt_lang and fmt_lang != 'NA':
+                    if not fmt_lang.startswith(selected_lang):
+                        continue
+
+                filtered_formats.append(f)
+
+            info_dict_copy['formats'] = filtered_formats
+
+        self.__list_table(info_dict['id'], 'formats', self.render_formats_table, info_dict_copy)
 
     def list_thumbnails(self, info_dict):
         self.__list_table(info_dict['id'], 'thumbnails', self.render_thumbnails_table, info_dict)

@@ -956,7 +956,7 @@ def create_parser():
         type='string',
         default=None,
         metavar='LANG',
-        help='Display filtered list of available formats (matching language code) for each video. ')
+        help='Display filtered list of available formats (matching language code eg. en-US) for each video. ')
     video_format.add_option(
         '--list-formats-as-table',
         action='store_true', dest='listformats_table', default=True,
