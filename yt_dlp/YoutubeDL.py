@@ -4085,6 +4085,8 @@ class YoutubeDL:
         self.to_stdout(table)
 
     def list_formats(self, info_dict):
+        self.params['simulate'] = True
+
         info_dict_copy = info_dict.copy()
         selected_langs_raw = self.params.get('list_formats_short')
 
@@ -4094,7 +4096,15 @@ class YoutubeDL:
             matched_count = 0
 
             for f in info_dict.get('formats', []):
-                if f.get('vcodec') == 'none' and f.get('acodec') != 'none':     # Preserve absolute essential standalone audio streams
+                # Exclude storyboard formats
+                if f.get('acodec') == 'none' and f.get('vcodec') == 'none' and 'storyboard' in str(
+                    f.get('format_note', '')).lower():
+                    continue
+                if f.get('ext') == 'mhtml':
+                    continue
+
+                # Preserve absolute essential standalone audio streams
+                if f.get('vcodec') == 'none' and f.get('acodec') != 'none':
                     filtered_formats.append(f)
                     continue
 
