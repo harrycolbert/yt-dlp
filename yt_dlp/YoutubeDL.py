@@ -4085,9 +4085,10 @@ class YoutubeDL:
 
     def list_formats(self, info_dict):
         info_dict_copy = info_dict.copy()
-        selected_lang = self.params.get('list_formats_short')
+        selected_langs_raw = self.params.get('list_formats_short')
 
-        if selected_lang is not None:
+        if selected_langs_raw is not None:
+            target_langs = [lang.strip().lower() for lang in selected_langs_raw.split(',')]
             filtered_formats = []
 
             for f in info_dict.get('formats', []):
@@ -4102,7 +4103,8 @@ class YoutubeDL:
                 # Exclude formats that don't match selected language
                 fmt_lang = f.get('language')
                 if fmt_lang and fmt_lang != 'NA':
-                    if not fmt_lang.startswith(selected_lang):
+                    fmt_lang_lower = fmt_lang.lower()
+                    if not any(fmt_lang_lower.startswith(target) for target in target_langs):
                         continue
 
                 filtered_formats.append(f)
