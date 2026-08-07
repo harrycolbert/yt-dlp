@@ -4090,6 +4090,7 @@ class YoutubeDL:
         if selected_langs_raw is not None:
             target_langs = [lang.strip().lower() for lang in selected_langs_raw.split(',')]
             filtered_formats = []
+            matched_count = 0
 
             for f in info_dict.get('formats', []):
                 if f.get('vcodec') == 'none' and f.get('acodec') != 'none':     # Preserve absolute essential standalone audio streams
@@ -4108,8 +4109,15 @@ class YoutubeDL:
                         continue
 
                 filtered_formats.append(f)
+                matched_count += 1
 
-            info_dict_copy['formats'] = filtered_formats
+            if matched_count == 0:
+                self.to_screen(
+                    f'Sorry, no video formats matched your language filter [{selected_langs_raw}] '
+                    'with valid file sizes. Here is the full format list...'
+                )
+            else:
+                info_dict_copy['formats'] = filtered_formats
 
         self.__list_table(info_dict['id'], 'formats', self.render_formats_table, info_dict_copy)
 
