@@ -3997,6 +3997,9 @@ class YoutubeDL:
 
         target_langs_raw = self.params.get('listformats_short')
         if target_langs_raw:
+            # Custom flag to bypass language filter
+            skip_language_filter = target_langs_raw.strip().lower() == 'all'
+
             target_langs = [lang.strip().lower() for lang in target_langs_raw.split(',') if lang.strip()]
             filtered_formats = []
 
@@ -4011,6 +4014,11 @@ class YoutubeDL:
 
                 # Exclude formats missing size fields
                 if not f.get('filesize') and not f.get('filesize_approx'):
+                    continue
+
+                # If the bypass keyword was used, skip matching evaluations and keep the format
+                if skip_language_filter:
+                    filtered_formats.append(f)
                     continue
 
                 # Evaluate language tags
