@@ -828,6 +828,7 @@ def parse_options(argv=None):
         'allow_multiple_audio_streams': opts.allow_multiple_audio_streams,
         'check_formats': opts.check_formats,
         'listformats': opts.listformats,
+        'listformats_short': opts.listformats_short,
         'listformats_table': opts.listformats_table,
         'outtmpl': opts.outtmpl,
         'outtmpl_na_placeholder': opts.outtmpl_na_placeholder,
