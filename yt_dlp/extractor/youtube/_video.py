@@ -11,6 +11,7 @@ import sys
 import threading
 import time
 import urllib.parse
+import json
 
 from ._base import (
     INNERTUBE_CLIENTS,
@@ -2528,8 +2529,14 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 else:
                     tracker['seen_comment_ids'].add(comment_id)
 
-                tracker['running_total'] += 1
-                tracker['total_reply_comments' if thread_parent else 'total_parent_comments'] += 1
+                tracker["running_total"] += 1
+                tracker["total_reply_comments" if thread_parent else "total_parent_comments"] += 1
+
+                self.save_comment_immediately(
+                    comment,
+                    f"{video_id}.comments.jsonl",
+                )
+
                 yield comment
 
                 # Attempt to get the replies
@@ -2665,6 +2672,12 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
         """
         token = f'\x12\r\x12\x0b{video_id}\x18\x062\'"\x11"\x0b{video_id}0\x00x\x020\x00B\x10comments-section'
         return base64.b64encode(token.encode()).decode()
+
+    @staticmethod
+    def save_comment_immediately(comment, output_file):
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(comment, ensure_ascii=False) + "\n")
+            f.flush()
 
     def _get_comments(self, ytcfg, video_id, contents, webpage):
         """Entry for comment extraction"""

@@ -1765,6 +1765,11 @@ class YoutubeDL:
         format_dur = lambda dur: '%02d:%02d:%02d' % timetuple_from_msec(dur * 1000)[:-1]
         last_msg = ''
 
+    ##def write_traffic(self):
+
+
+    ##def write_timestamp(self):
+
         def progress(msg):
             nonlocal last_msg
             full_msg = f'{msg}\n'
@@ -2145,9 +2150,13 @@ class YoutubeDL:
         failures = 0
         max_failures = self.params.get('skip_playlist_after_errors') or float('inf')
         for i, (playlist_index, entry) in enumerate(entries):
-           self.to_stderr(f"[metadata] Extracting video {i + 1}/{n_entries}")
+            self.to_stderr(
+                f"[metadata] Extracting video {i + 1}/{n_entries}"
+            )
+
             if lazy:
                 resolved_entries.append((playlist_index, entry))
+
             if not entry:
                 continue
 
