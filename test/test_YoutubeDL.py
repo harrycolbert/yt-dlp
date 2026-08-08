@@ -607,6 +607,50 @@ class TestYoutubeDL(unittest.TestCase):
         self.assertTrue(subs['es']['_auto'])
         self.assertTrue(subs['pt']['_auto'])
 
+    def test_list_formats_short_filtering(self):
+        formats = [
+            {'format_id': '101', 'ext': 'mp4', 'vcodec': 'avc1', 'acodec': 'mp4a', 'filesize': 5000000,
+             'language': 'en'},
+            {'format_id': '102', 'ext': 'mp4', 'vcodec': 'avc1', 'acodec': 'mp4a', 'filesize': 6000000,
+             'language': 'fr'},
+            {'format_id': '103', 'ext': 'mkv', 'vcodec': 'vp9', 'acodec': 'opus', 'filesize': 7000000,
+             'language': None},
+            {'format_id': '104', 'ext': 'mp4', 'vcodec': 'avc1', 'acodec': 'mp4a', 'filesize': None, 'language': 'en'},
+            {'format_id': '105', 'ext': 'jpg', 'vcodec': 'none', 'acodec': 'none', 'format_note': 'storyboard',
+             'filesize': 100000}
+        ]
+        info_dict = _make_result(formats)
+
+        ydl_fr = YDL({'listformats_short': 'fr'})
+        table_fr = ydl_fr.render_formats_table(info_dict)
+        self.assertIn('102', table_fr)
+        self.assertIn('103', table_fr)
+        self.assertNotIn('101', table_fr)
+        self.assertNotIn('104', table_fr)
+        self.assertNotIn('105', table_fr)
+
+        ydl_all = YDL({'listformats_short': 'all'})
+        table_all = ydl_all.render_formats_table(info_dict)
+        self.assertIn('101', table_all)
+        self.assertIn('102', table_all)
+        self.assertIn('103', table_all)
+        self.assertNotIn('104', table_all)
+        self.assertNotIn('105', table_all)
+
+        # FIX: Create a strict info dict with NO neutral formats so fallback is forced to trigger
+        strict_formats = [
+            {'format_id': '101', 'ext': 'mp4', 'vcodec': 'avc1', 'acodec': 'mp4a', 'filesize': 5000000,
+             'language': 'en'},
+            {'format_id': '102', 'ext': 'mp4', 'vcodec': 'avc1', 'acodec': 'mp4a', 'filesize': 6000000,
+             'language': 'fr'}
+        ]
+        strict_info_dict = _make_result(strict_formats)
+
+        ydl_es = YDL({'listformats_short': 'es'})
+        table_es = ydl_es.render_formats_table(strict_info_dict)
+        self.assertIn('101', table_es)  # Now fallback will trigger correctly and return everything!
+        self.assertIn('102', table_es)
+
     def test_add_extra_info(self):
         test_dict = {
             'extractor': 'Foo',
