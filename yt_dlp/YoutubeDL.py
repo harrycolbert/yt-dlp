@@ -3982,14 +3982,70 @@ class YoutubeDL:
     def _get_formats(self, info_dict):
         if info_dict.get('formats') is None:
             if info_dict.get('url') and info_dict.get('_type', 'video') == 'video':
-                return [info_dict]
-            return []
-        return info_dict['formats']
+                formats = [info_dict]
+            else:
+                formats = []
+        else:
+            formats = info_dict['formats']
+
+        return formats
 
     def render_formats_table(self, info_dict):
         formats = self._get_formats(info_dict)
         if not formats:
             return
+
+        target_langs_raw = self.params.get('listformats_short')
+        if target_langs_raw:
+            target_langs = [lang.strip().lower() for lang in target_langs_raw.split(',') if lang.strip()]
+            filtered_formats = []
+
+            for f in formats:
+                # Exclude storyboard/image/mhtml formats
+                if (f.get('acodec') == 'none' and f.get('vcodec') == 'none' and 'storyboard' in str(
+                    f.get('format_note', '')).lower()
+                    or f.get('ext') == 'mhtml'
+                    or f.get('vcodec') == 'images'
+                    or 'mhtml' in str(f.get('protocol', '')).lower()):
+                    continue
+
+                # Exclude formats missing size fields
+                if not f.get('filesize') and not f.get('filesize_approx'):
+                    continue
+
+                # Evaluate language tags
+                fmt_lang = f.get('language') or f.get('http_headers', {}).get('Accept-Language')
+                clean_tags = []
+                if fmt_lang and fmt_lang != 'NA':
+                    for item in fmt_lang.split(','):
+                        tag = item.split(';')[0].strip().lower()
+                        if tag:
+                            clean_tags.append(tag)
+
+                # Keep the format if no language metadata is provided
+                if not clean_tags:
+                    filtered_formats.append(f)
+                    continue
+
+                # Verify if the explicit tracks match the target language list
+                is_language_match = False
+                for tag in clean_tags:
+                    if any(tag.startswith(target) for target in target_langs):
+                        is_language_match = True
+                        break
+
+                if is_language_match:
+                    filtered_formats.append(f)
+
+            # If no matches, throw the warning message and fallback to the original list
+            if len(filtered_formats) == 0:
+                self.to_screen(
+                    f'Sorry, no video formats matched your language filter [{target_langs_raw}] '
+                    'with valid file sizes. Here is the full format list...\n'
+                )
+            else:
+                formats = filtered_formats
+
         if not self.params.get('listformats_table', True) is not False:
             table = [
                 [
@@ -4086,51 +4142,7 @@ class YoutubeDL:
 
     def list_formats(self, info_dict):
         self.params['simulate'] = True
-
-        info_dict_copy = info_dict.copy()
-        selected_langs_raw = self.params.get('list_formats_short')
-
-        if selected_langs_raw is not None:
-            target_langs = [lang.strip().lower() for lang in selected_langs_raw.split(',')]
-            filtered_formats = []
-            matched_count = 0
-
-            for f in info_dict.get('formats', []):
-                # Exclude storyboard formats
-                if f.get('acodec') == 'none' and f.get('vcodec') == 'none' and 'storyboard' in str(
-                    f.get('format_note', '')).lower():
-                    continue
-                if f.get('ext') == 'mhtml':
-                    continue
-
-                # Preserve absolute essential standalone audio streams
-                if f.get('vcodec') == 'none' and f.get('acodec') != 'none':
-                    filtered_formats.append(f)
-                    continue
-
-                # Exclude formats with missing/unavailable file sizes
-                if not f.get('filesize') and not f.get('filesize_approx'):
-                    continue
-
-                # Exclude formats that don't match selected language
-                fmt_lang = f.get('language')
-                if fmt_lang and fmt_lang != 'NA':
-                    fmt_lang_lower = fmt_lang.lower()   # Language matching not case-sensitive (en_US == en_us)
-                    if not any(fmt_lang_lower.startswith(target) for target in target_langs):   # Includes all dialects of selected language
-                        continue
-
-                filtered_formats.append(f)
-                matched_count += 1
-
-            if matched_count == 0:
-                self.to_screen(
-                    f'Sorry, no video formats matched your language filter [{selected_langs_raw}] '
-                    'with valid file sizes. Here is the full format list...'
-                )
-            else:
-                info_dict_copy['formats'] = filtered_formats
-
-        self.__list_table(info_dict['id'], 'formats', self.render_formats_table, info_dict_copy)
+        self.__list_table(info_dict['id'], 'formats', self.render_formats_table, info_dict)
 
     def list_thumbnails(self, info_dict):
         self.__list_table(info_dict['id'], 'thumbnails', self.render_thumbnails_table, info_dict)
