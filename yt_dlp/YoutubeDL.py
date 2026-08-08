@@ -2146,10 +2146,10 @@ class YoutubeDL:
         max_failures = self.params.get('skip_playlist_after_errors') or float('inf')
         for i, (playlist_index, entry) in enumerate(entries):
            self.to_stderr(f"[metadata] Extracting video {i + 1}/{n_entries}")
-           if lazy:
+            if lazy:
                 resolved_entries.append((playlist_index, entry))
-           if not entry:
-            continue
+            if not entry:
+                continue
 
             entry['__x_forwarded_for_ip'] = ie_result.get('__x_forwarded_for_ip')
             if not lazy and 'playlist-index' in self.params['compat_opts']:

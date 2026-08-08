@@ -819,6 +819,10 @@ def create_parser():
         '--skip-playlist-after-errors', metavar='N',
         dest='skip_playlist_after_errors', default=None, type=int,
         help='Number of allowed failures until the rest of the playlist is skipped')
+    selection.add_option(
+        '--no-merge',
+        action='store_true', dest='no_merge', default=False,
+        help='Do not merge separately downloaded tracks after downloading')
 
     authentication = optparse.OptionGroup(parser, 'Authentication Options')
     authentication.add_option(
