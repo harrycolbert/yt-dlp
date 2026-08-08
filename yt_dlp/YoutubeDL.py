@@ -2145,7 +2145,7 @@ class YoutubeDL:
         failures = 0
         max_failures = self.params.get('skip_playlist_after_errors') or float('inf')
         for i, (playlist_index, entry) in enumerate(entries):
-           self.to_stderr(f"[metadata] Extracting video {i + 1}/{n_entries}")
+            self.to_stderr(f"[metadata] Extracting video {i + 1}/{n_entries}")
             if lazy:
                 resolved_entries.append((playlist_index, entry))
             if not entry:
@@ -3576,14 +3576,9 @@ class YoutubeDL:
                             info_dict['__real_download'] = info_dict['__real_download'] or real_download
                             success = success and partial_success
 
-                    if downloaded and merger.available and not self.params.get('allow_unplayable_formats'):
-                        info_dict['__postprocessors'].append(merger)
-                        info_dict['__files_to_merge'] = downloaded
-                        # Even if there were no downloads, it is being merged only now
-                        info_dict['__real_download'] = True
-                    else:
-                        for file in downloaded:
-                            files_to_move[file] = None
+                    do_merge = (not self.params.get('no_merge'))
+                    self.setup_merge(do_merge, info_dict, files_to_move, downloaded, merger, self.params.get('allow_unplayable_formats'))
+
                 else:
                     # Just a single file
                     dl_filename = existing_video_file(full_filename, temp_filename)
@@ -3684,6 +3679,17 @@ class YoutubeDL:
         if self.params.get('force_write_download_archive'):
             info_dict['__write_download_archive'] = True
         check_max_downloads()
+
+    @staticmethod
+    def setup_merge(merge, info_dict, files_to_move, downloaded, merger, allow_unplayable_formats):
+        if merge and downloaded and merger.available and not allow_unplayable_formats:
+            info_dict['__postprocessors'].append(merger)
+            info_dict['__files_to_merge'] = downloaded
+            # Even if there were no downloads, it is being merged only now
+            info_dict['__real_download'] = True
+        else:
+            for file in downloaded:
+                files_to_move[file] = None
 
     def __download_wrapper(self, func):
         @functools.wraps(func)
