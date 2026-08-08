@@ -1339,6 +1339,7 @@ The available fields are:
  - `modified_date` (string): The date (YYYYMMDD) when the video was last modified in UTC
  - `channel` (string): Full name of the channel the video is uploaded on
  - `channel_id` (string): Id of the channel
+ - `channel_ids` (list): Id of the channel(s) in case of multiple uploaders
  - `channel_url` (string): URL of the channel
  - `channel_follower_count` (numeric): Number of followers of the channel
  - `channel_is_verified` (boolean): Whether the channel is verified on the platform

@@ -4463,10 +4463,18 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 'attributedTitle', 'commandRuns', ..., 'onTap', 'innertubeCommand', 'showDialogCommand',
                 'panelLoadingStrategy', 'inlineContent', 'dialogViewModel', 'customContent', 'listViewModel',
                 'listItems', ..., 'listItemViewModel', 'title', 'content', {str}))
+            pat = '\'channelId\': \'UC.{22}\''
+            channel_ids = []
+            for match in re.finditer(pat,str(vsir)):
+                thispat = 'UC.{22}'
+                thisid = re.search(thispat,match.group()).group()
+                if not thisid in channel_ids:
+                    channel_ids.append(thisid)
             info.update({
                 'channel': self._get_text(vor, 'title') or (collaborators[0] if collaborators else None),
                 'channel_follower_count': self._get_count(vor, 'subscriberCountText'),
                 'creators': collaborators if collaborators else None,
+                'channel_ids': channel_ids,
             })
 
             if not channel_handle:
