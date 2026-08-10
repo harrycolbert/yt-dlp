@@ -2678,6 +2678,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
         with open(output_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(comment, ensure_ascii=False) + "\n")
             f.flush()
+            return output_file
 
     def _get_comments(self, ytcfg, video_id, contents, webpage):
         """Entry for comment extraction"""

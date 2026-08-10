@@ -12,6 +12,7 @@ import threading
 import time
 import urllib.parse
 
+
 from ._base import (
     INNERTUBE_CLIENTS,
     BadgeType,
