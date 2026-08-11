@@ -2529,7 +2529,7 @@ class YoutubeIE(YoutubeBaseInfoExtractor):
                 else:
                     tracker['seen_comment_ids'].add(comment_id)
 
-               tracker["running_total"] += 1
+                tracker["running_total"] += 1
                 tracker["total_reply_comments" if thread_parent else "total_parent_comments"] += 1
 
                 self.save_comment_immediately(
