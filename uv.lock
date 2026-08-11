@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer = "2026-08-04T14:07:14.588516Z"
 exclude-newer-span = "P7D"
 
 [options.exclude-newer-package]
@@ -1187,6 +1187,9 @@ wheels = [
 [[package]]
 name = "yt-dlp"
 source = { editable = "." }
+dependencies = [
+    { name = "mutagen" },
+]
 
 [package.optional-dependencies]
 curl-cffi = [
@@ -1301,6 +1304,7 @@ requires-dist = [
     { name = "jeepney", marker = "extra == 'pin-secretstorage'", specifier = "==0.9.0" },
     { name = "markdown-it-py", marker = "implementation_name == 'cpython' and extra == 'pin-curl-cffi'", specifier = "==4.2.0" },
     { name = "mdurl", marker = "implementation_name == 'cpython' and extra == 'pin-curl-cffi'", specifier = "==0.1.2" },
+    { name = "mutagen", specifier = ">=1.48.1" },
     { name = "mutagen", marker = "extra == 'default'" },
     { name = "mutagen", marker = "extra == 'pin'", specifier = "==1.48.1" },
     { name = "pycparser", marker = "implementation_name != 'PyPy' and platform_python_implementation != 'PyPy' and extra == 'pin-secretstorage'", specifier = "==3.0" },
