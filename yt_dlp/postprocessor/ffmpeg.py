@@ -57,6 +57,7 @@ ACODECS = {
     'flac': ('flac', 'flac', ()),
     'alac': ('m4a', None, ('-acodec', 'alac')),
     'wav': ('wav', None, ('-f', 'wav')),
+    'aiff': ('aiff', None, ('-acodec', 'aiff')),
 }
 
 
