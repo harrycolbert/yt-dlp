@@ -1024,7 +1024,7 @@ def create_parser():
     downloader.add_option(
         '-r', '--limit-rate', '--rate-limit',
         dest='ratelimit', metavar='RATE',
-        help='Maximum download rate in bytes per second, e.g. 50K or 4.2M')
+        help='Maximum download rate in bytes per second, e.g. 50K or 4.2M; Use \'bitrate\' to specify the media\'s bitrate.')
     downloader.add_option(
         '--throttled-rate',
         dest='throttledratelimit', metavar='RATE',

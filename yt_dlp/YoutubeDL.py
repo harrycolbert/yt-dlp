@@ -1136,6 +1136,19 @@ class YoutubeDL:
     def _format_err(self, *args, **kwargs):
         return self._format_text(self._out_files.error, self._allow_colors.error, *args, **kwargs)
 
+    def _determine_bitrate(self, info_dict):
+        """Calculate the combined bitrate of included media formats."""
+        bitrate = 0
+        formats = info_dict.get('requested_formats') or [info_dict]
+        for fmt in formats:
+            tbr = fmt.get('tbr') # in kilobytes per second
+            if tbr is None:
+                tbr = 0
+                tbr += fmt.get('vbr', 0) or 0
+                tbr += fmt.get('abr', 0) or 0
+            bitrate += tbr
+        return bitrate * 1000/8 # See note above
+    
     def report_warning(self, message, only_once=False):
         """
         Print the message to stderr, it will be prefixed with 'WARNING:'
@@ -3311,6 +3324,13 @@ class YoutubeDL:
         else:
             params = self.params
 
+            if 'bitrate' == params.get('ratelimit'):
+                bitrate = self._determine_bitrate(info)
+                if None is bitrate:
+                    self.report_warning('Ignoring --limit-rate, bitrate could not be determined')
+                params = params.copy()
+                params['ratelimit'] = bitrate
+                    
         fd = get_suitable_downloader(info, params, to_stdout=(name == '-'))(self, params)
         if not test:
             for ph in self._progress_hooks:

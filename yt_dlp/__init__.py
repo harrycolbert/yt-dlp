@@ -318,7 +318,10 @@ def validate_options(opts):
             validate_positive(name, numeric_limit, True)
         return numeric_limit
 
-    opts.ratelimit = validate_bytes('rate limit', opts.ratelimit, True)
+    if isinstance(opts.ratelimit, str) and opts.ratelimit.lower() == 'bitrate':
+        opts.ratelimit = 'bitrate'
+    else:
+        opts.ratelimit = validate_bytes('rate limit', opts.ratelimit, True)
     opts.throttledratelimit = validate_bytes('throttled rate limit', opts.throttledratelimit)
     opts.min_filesize = validate_bytes('min filesize', opts.min_filesize)
     opts.max_filesize = validate_bytes('max filesize', opts.max_filesize)
