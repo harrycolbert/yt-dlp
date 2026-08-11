@@ -1147,6 +1147,8 @@ class YoutubeDL:
                 tbr += fmt.get('vbr', 0) or 0
                 tbr += fmt.get('abr', 0) or 0
             bitrate += tbr
+        if 0 == bitrate:
+            return None
         return bitrate * 1000/8 # See note above
     
     def report_warning(self, message, only_once=False):

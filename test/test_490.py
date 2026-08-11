@@ -29,3 +29,28 @@ class Test_490(unittest.TestCase):
         assert(info_dict.get("__files_to_merge", None) is None)
         assert(info_dict.get("__real_download", None) is None)
         assert(files_to_move.get('file_name_example', True) is None)
+
+    def test_determine_bitrate(self):
+        # Ensure declared tbr value is respected
+        self.assertEqual(125000, YoutubeDL()._determine_bitrate({'tbr': 1000}))
+        # Ensure tbr is correctly calculated from constituent bitrates
+        self.assertEqual(141000, YoutubeDL()._determine_bitrate({'vbr': 1000, 'abr': 128}))
+        # Ensure requested_formats structure is recognized
+        info_dict = {
+            'requested_formats': [
+                {'tbr': 1000},
+                {'tbr': 128},
+            ]
+        }
+        self.assertEqual(141000, YoutubeDL()._determine_bitrate(info_dict))
+        # Ensure unrecognized data falls back to default behavior
+        self.assertIsNone(
+            YoutubeDL()._determine_bitrate({
+                'format_id': '1',
+            }),
+        )
+
+    def test_rate_limit_option_parsing(self):
+        (parser, opts, urls, ydl_opts) = parse_options(['--limit-rate', 'bitrate', 'https://example.com/video'])
+        self.assertEqual('bitrate', opts.ratelimit)
+        self.assertEqual('bitrate', ydl_opts['ratelimit'])
